@@ -94,7 +94,7 @@ _zsh_nvm_lazy_load() {
     
     # Add it to path if it doesn't already exist.
     if [ -d "$NVM_CACHE_LOAD_PATH_NVM" ] && [[ ":$PATH:" != *":$NVM_CACHE_LOAD_PATH_NVM:"* ]]; then
-      export PATH="${NVM_CACHE_LOAD_PATH_NVM}${PATH:+"$PATH:"}"
+      export PATH="${NVM_CACHE_LOAD_PATH_NVM}:${PATH:+"$PATH"}"
     fi
   fi
   
