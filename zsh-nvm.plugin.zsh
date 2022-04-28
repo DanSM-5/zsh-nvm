@@ -87,10 +87,10 @@ _zsh_nvm_completion() {
 }
 
 _zsh_nvm_lazy_load() {
-  local skip_cached_binaries = false
+  local skip_cached_binaries=false
   if [[ "$NVM_CACHE_LOAD" == true ]] && [[ -s "${HOME}/.zsh_nvm_cache" ]]; then
     export NVM_CACHE_LOAD_PATH_NVM="$(cat "${HOME}/.zsh_nvm_cache")"
-    skip_cached_binaries = true
+    skip_cached_binaries=true
     
     # Add it to path if it doesn't already exist.
     if [ -d "$NVM_CACHE_LOAD_PATH_NVM" ] && [[ ":$PATH:" != *":$NVM_CACHE_LOAD_PATH_NVM:"* ]]; then
