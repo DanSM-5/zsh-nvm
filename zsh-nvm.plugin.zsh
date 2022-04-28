@@ -49,8 +49,9 @@ _zsh_nvm_load() {
   else
     source "$NVM_DIR/nvm.sh"
     if [[ "$NVM_CACHE_LOAD" == true ]]; then
+      local nvm_cache_path="${NVM_CACHE_PATH:-$HOME/.zsh_nvm_cache}"
       export NVM_CACHE_LOAD_PATH_NVM="$(awk -F ':' '{ print $1 }' <<< "$PATH")"
-      echo "$NVM_CACHE_LOAD_PATH_NVM" > "${HOME}/.zsh_nvm_cache"
+      echo "$NVM_CACHE_LOAD_PATH_NVM" > "${nvm_cache_path}"
     fi
   fi
 
@@ -88,8 +89,9 @@ _zsh_nvm_completion() {
 
 _zsh_nvm_lazy_load() {
   local skip_cached_binaries=false
-  if [[ "$NVM_CACHE_LOAD" == true ]] && [[ -s "${HOME}/.zsh_nvm_cache" ]]; then
-    export NVM_CACHE_LOAD_PATH_NVM="$(cat "${HOME}/.zsh_nvm_cache")"
+  local nvm_cache_path="${NVM_CACHE_PATH:-$HOME/.zsh_nvm_cache}"
+  if [[ "$NVM_CACHE_LOAD" == true ]] && [[ -s "${nvm_cache_path}" ]]; then
+    export NVM_CACHE_LOAD_PATH_NVM="$(cat "${nvm_cache_path}")"
     skip_cached_binaries=true
     
     # Add it to path if it doesn't already exist.
