@@ -36,11 +36,19 @@ _zsh_nvm_global_binaries() {
   fi
 }
 
+_zsh_nvm_update_cache() {
+  if [[ "$NVM_NO_USE" != true && "$NVM_CACHE_LOAD" == true ]]; then
+    local nvm_cache_path="${NVM_CACHE_PATH:-$HOME/.zsh_nvm_cache}"
+    export NVM_CACHE_LOAD_PATH_NVM="$(awk -F ':' '{ print $1 }' <<< "$PATH")"
+    echo "$NVM_CACHE_LOAD_PATH_NVM" > "${nvm_cache_path}"
+  fi
+}
+
 _zsh_nvm_load() {
 
   if [[ "$NVM_CACHE_LOAD" == true ]]; then
-      # Strip out the old cached version of node that we were using.
-      export PATH="$(sed -e 's|[^:]*versions/node[^:]*[:]||g' <<< "$PATH")"
+    # Strip out the old cached version of node that we were using.
+    export PATH="$(sed -e 's|[^:]*versions/node[^:]*[:]||g' <<< "$PATH")"
   fi
 
   # Source nvm (check if `nvm use` should be ran after load)
@@ -48,11 +56,6 @@ _zsh_nvm_load() {
     source "$NVM_DIR/nvm.sh" --no-use
   else
     source "$NVM_DIR/nvm.sh"
-    if [[ "$NVM_CACHE_LOAD" == true ]]; then
-      local nvm_cache_path="${NVM_CACHE_PATH:-$HOME/.zsh_nvm_cache}"
-      export NVM_CACHE_LOAD_PATH_NVM="$(awk -F ':' '{ print $1 }' <<< "$PATH")"
-      echo "$NVM_CACHE_LOAD_PATH_NVM" > "${nvm_cache_path}"
-    fi
   fi
 
   # Rename main nvm function
@@ -70,6 +73,8 @@ _zsh_nvm_load() {
       'use')
         _zsh_nvm_nvm "$@"
         export NVM_AUTO_USE_ACTIVE=false
+        # Save latest node to cache
+        _zsh_nvm_update_cache
         ;;
       'install' | 'i')
         _zsh_nvm_install_wrapper "$@"
